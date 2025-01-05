@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files 2 Array || Savage King</title>
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<script src="trap.js"></script>
+    <style>
+        /* Style the scrollbar */
+::-webkit-scrollbar {
+    width: 8px; /* Adjust the width of the scrollbar */
+    height: 12px; /* Adjust the height of the scrollbar (for horizontal scrollbars) */
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #2196F3; 
+    border-radius: 10px; 
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #0b7dda; 
+}
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .file-upload-container {
+            background-color: var(--card-background);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .indexing-options {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--background-color);
+            border-radius: 0.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .drop-zone p {
+            margin: 1rem 0;
+            color: #64748b;
+        }
+
+        .file-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .file-type {
+            background-color: var(--background-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-color);
+        }
+
+        .output-container {
+            background-color: var(--card-background);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .output-header {
+            display: flex;flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .clear-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        #output {
+            background-color: var(--background-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .processing {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+footer a {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+footer a:hover {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -2px rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+}
+
+footer a:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.4s ease, transform 0.4s ease;
+    border: 3px solid var(--primary-color);
+    overflow: hidden;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Transition for background color change when checked */
+input[type="radio"]:checked {
+    background-color: var(--primary-color);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+input[type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: white;
+    transition: background-color 0.4s ease;
+}
+
+input[type="radio"]:hover {
+    border-color: var(--secondary-color);
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+label {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    font-weight: bold;
+    margin-left: 1rem;
+    cursor: pointer;
+    transition: color 0.5s ease, background-color 0.5s ease;
+    padding: 5px;
+    border-radius: 10px;
+}
+input[type="radio"]:hover + label {
+    border: 1px solid var(--secondary-color);
+    background-color: rgba(0, 0, 255, 0.1);
+    color: var(--secondary-color);
+}
+
+input[type="radio"]:checked + label {
+    color: white;
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}a:hover i{
+transform: translateX(20%);
+}i{
+    transition: all 0.3s;
+}section{
+    display: flex;align-items: center;justify-content: center;
+    background-color: #f7fafc;padding: 10px;border-radius: 10px;
+}section a{
+    border-radius: 10px;border: 2px solid blue;padding: 5px;font-weight: bold;color: black;transition: all 0.3s;
+    text-decoration: none;background-color: white;display: flex;justify-content: space-around;align-items: center;
+}section a:hover{
+    background-color: #e0e0e0;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Files to Array converter</h1>
+        </header>
+
+        <div class="file-upload-container">
+            <div class="indexing-options">
+                <div class="radio-group">
+                    <input type="radio" id="leftToRight" name="indexingMode" value="leftToRight" checked>
+                    <label for="leftToRight">Word Array</label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="topToBottom" name="indexingMode" value="topToBottom">
+                    <label for="topToBottom">Line Array</label>
+                </div>
+            </div>
+            <div class="drop-zone" id="dropZone">
+                <p>Drag and drop files here or click to select</p>
+                <input type="file" id="fileInput" hidden accept=".json,.xlsx,.txt,.docx,.csv,.pdf">
+                <div class="file-types">
+                    <span class="file-type">JSON</span>
+                    <span class="file-type">Excel</span>
+                    <span class="file-type">Text</span>
+                    <span class="file-type">Word</span>
+                    <span class="file-type">CSV</span>
+                    <span class="file-type">PDF</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="output-container">
+            <div class="output-header">
+                <h2>Output</h2>
+                <button class="clear-btn" id="clearBtn">Clear</button>
+                <button class="clear-btn" onclick="copytext()">Copy</button>
+            </div>
+            <pre id="output"></pre>
+        </div>
+        <br><br>
+        <footer>
+            <a  href="python.html">Python code <i class="fas fa-arrow-right right-arrow-fa"></i>            </a>
+            <a  href="javascript.html">javascript code <i class="fas fa-arrow-right right-arrow-fa"></i></a>
+            <a href="Array Converter with Tkinter.zip" download>Array Converter using Tkinter <i class="fas fa-arrow-circle-down"></i></a>
+            <a href="index.html" download="source.html">Download Source code  <i class="fas fa-arrow-circle-down"></i></a>
+        </footer>
+        <br>
+        <section>  <a target="_blank" href="https://github.com./projectwork11421">Github<i class="fab fa-github github-icon-fa"></i></a></section>
+        <br>
+    </div>
+
+    <script>
+        function copytext() {
+    const outputText = document.getElementById("output").textContent;
+
+    const textarea = document.createElement('textarea');
+    textarea.value = outputText;
+    textarea.setAttribute('readonly', ''); 
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px'; 
+    
+    document.body.appendChild(textarea);
+    textarea.select();
+    let success = false;
+    try {
+        success = document.execCommand('copy');
+        if (success) {
+            alert("Text copied to clipboard!");
+        } else {
+            alert("Failed to copy text");
+        }
+    } catch (err) {
+        console.error('Failed to copy text:', err);
+        alert("Failed to copy text");
+    }
+    
+    document.body.removeChild(textarea);
+}
+        function processTextLeftToRight(text) {
+            return text.split(/\s+/)
+                .filter(word => word.length > 0);
+        }
+
+        function processTextTopToBottom(text) {
+            return text.split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+        }
+        async function processJsonFile(file) {
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                const dataString = JSON.stringify(data, null, 2);
+                return getProcessedText(dataString);
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function processExcelFile(file) {
+            try {
+                const data = await file.arrayBuffer();
+                const workbook = XLSX.read(data);
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                return getProcessedText(jsonData.map(row => row.join('\t')).join('\n'));
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function processTextFile(file) {
+            try {
+                const text = await file.text();
+                return getProcessedText(text);
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function processDocxFile(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await mammoth.extractRawText({ arrayBuffer });
+                return getProcessedText(result.value);
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function processCsvFile(file) {
+            try {
+                const text = await file.text();
+                return getProcessedText(text);
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function processPdfFile(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const textArray = [];
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items
+                        .map(item => item.str)
+                        .join(' ');
+                    textArray.push(`Page ${i}: ${pageText}`);
+                }
+                
+                return getProcessedText(textArray.join('\n'));
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function getProcessedText(text) {
+            const indexingMode = document.querySelector('input[name="indexingMode"]:checked').value;
+            const processedData = indexingMode === 'leftToRight' 
+                ? processTextLeftToRight(text)
+                : processTextTopToBottom(text);
+            return { success: true, data: processedData };
+        }
+
+        // UI Handlers
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const output = document.getElementById('output');
+        const clearBtn = document.getElementById('clearBtn');
+
+        async function processFile(file) {
+            output.classList.add('processing');
+            const extension = file.name.split('.').pop().toLowerCase();
+            let result;
+
+            try {
+                switch (extension) {
+                    case 'json':
+                        result = await processJsonFile(file);
+                        break;
+                    case 'xlsx':
+                        result = await processExcelFile(file);
+                        break;
+                    case 'txt':
+                        result = await processTextFile(file);
+                        break;
+                    case 'docx':
+                        result = await processDocxFile(file);
+                        break;
+                    case 'csv':
+                        result = await processCsvFile(file);
+                        break;
+                    case 'pdf':
+                        result = await processPdfFile(file);
+                        break;
+                    default:
+                        result = { success: false, error: 'Unsupported file type' };
+                }
+
+                if (result.success) {
+                    output.textContent = `[\n  ${result.data.map(item => JSON.stringify(item)).join(',\n  ')}\n]`;
+                } else {
+                    output.textContent = JSON.stringify(result, null, 2);
+                }
+            } catch (error) {
+                output.textContent = `Error processing file: ${error.message}`;
+            }
+
+            output.classList.remove('processing');
+        }
+
+        // Event Listeners
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) processFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) processFile(file);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            output.textContent = '';
+            fileInput.value = '';
+        });
+        document.querySelectorAll('input[name="indexingMode"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                if (file) processFile(file);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #4FC3F7; /* Light grey background */
+            color: #333; /* Dark grey text */
+        }
+        h1 {
+            text-align: center;
+            color: #2d2d2d; /* Dark grey for header */
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        .code-section {
+            position: relative;
+            margin-bottom: 30px;
+            background-color: #ffffff; /* White background for code sections */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            padding: 25px;
+            overflow: hidden;
+        }
+        pre {
+            background-color: #1e1e1e; /* Dark background for code */
+            color: #dcdcdc; /* Light text for code */
+            padding: 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            margin: 0;
+            border: 1px solid #444; /* Dark border around code */
+            transition: box-shadow 0.3s ease;
+        }
+        pre:hover {
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1); /* Subtle hover effect */
+        }
+        button.copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50; /* Green button */
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+        }
+        .code-section:hover button.copy-btn {
+            display: block;
+        }
+        button.copy-btn:hover {
+            background-color: #45a049; /* Slightly darker green on hover */
+        }
+    
+        /* Syntax highlighting */
+        .keyword { color: #ff6347; font-weight: bold; } /* Red for keywords */
+        .string { color: #61afef; } /* Light blue for strings */
+        .comment { color: #98c379; font-style: italic; } /* Soft green for comments */
+        .function { color: #c678dd; font-weight: bold; } /* Purple for functions */
+        .number { color: #e06c75; } /* Light red for numbers */
+        .variable { color: #56b6c2; } /* Teal for variables */
+        .operator { color: #abb2bf; } /* Soft grey for operators */
+        

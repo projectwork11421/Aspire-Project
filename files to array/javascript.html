@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="trap.js"></script>
+</head>
+<body>
+    <h1>Files using JavaScript</h1>
+
+    <div id="code-container"></div>
+
+    <script>
+        const pythonCodeArray = [
+            {
+                title: "For Json",
+                code: `
+// Import the 'fs' module to work with file system
+const fs = require('fs');
+
+// Read the content of json file asynchronously with UTF-8 encoding
+fs.readFile('file.json', 'utf8', (err, data) => {
+// If an error occurs while reading the file, log the error and return
+if (err) return console.error("Error:", err);
+try {
+// Parse the JSON content from the file into a JavaScript object
+const jsonData = JSON.parse(data);
+
+// Check if the parsed data is an array, otherwise convert it into an array using Object.values()
+const resultArray = Array.isArray(jsonData) ? jsonData : Object.values(jsonData);
+
+// Log the resulting array to the console
+console.log(resultArray);
+} catch (e) {
+// If there is an error parsing the JSON, log the error message
+console.error("Error parsing JSON:", e);
+}
+});
+`
+            },
+            {
+                title: "For Excelsheet",
+                code: `
+const xlsx = require('xlsx');
+
+// Read the Excel file and log all sheet names to confirm
+const workbook = xlsx.readFile('file_path/file.xlsx');
+console.log(workbook.SheetNames);  // Logs sheet names to help debug
+
+// Reading the first sheet and converting it to a 2D array (including first row as data)
+const dataArray = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 0 });
+
+// Printing the resulting array to display its contents
+console.log(dataArray);
+`
+            },
+            {
+                title: "For Textfile",
+                code: `
+const fs = require('fs');
+
+// Try to read the file asynchronously
+fs.readFile('file_path/file.txt', 'utf8', (err, data) => {
+if (err) {
+// If an error occurs, log it
+console.log(Error: err);
+return;
+}
+
+// Convert the file content into an array by splitting by newlines
+const array = data.split('\\n').map(line => line.trim());
+
+// Print the array of lines read from the file
+console.log(array);
+});
+`
+            }, {
+                title: "For docx",
+                code: `# Import the Document class from the python-docx module
+const fs = require('fs');
+const mammoth = require('mammoth');
+
+// Define the path to the .docx file
+const docxPath = "C:\\Users\\array\\file.docx";
+
+// Function to read the .docx file and extract the text
+function extractTextFromDocx(docxPath) {
+  fs.readFile(docxPath, function(err, data) {
+    if (err) {
+      console.error("Error reading file:", err);
+      return;
+    }
+
+    // Use mammoth to convert the .docx content to text
+    mammoth.extractRawText({ buffer: data })
+      .then(function(result) {
+        const text = result.value.split("\n");
+        console.log(text);
+      })
+      .catch(function(err) {
+        console.error("Error processing .docx file:", err);
+      });
+  });
+}
+
+// Call the function with the path to the file
+extractTextFromDocx(docxPath);
+
+`
+            },
+            {
+                title: "For CSV files",
+                code: `// Import the required modules
+const fs = require("fs");
+const { parse } = require("csv-parse");
+
+// Define the path to the CSV file
+const filePath = "C:\\Users\\files to array\\data.csv"; // Replace with the actual path to your file
+
+// Function to read and parse the CSV file into a 2D array
+function convertCsvToArray(filePath) {
+fs.readFile(filePath, "utf8", (err, data) => {
+if (err) {
+console.error("Error reading the file:", err);
+return;
+}
+
+// Use csv-parse to parse the CSV content
+parse(data, { delimiter: ",", trim: true }, (err, rows) => {
+if (err) {
+console.error("Error parsing the CSV file:", err);
+return;
+}
+
+// Log the resulting 2D array
+console.log("CSV as Array:", rows);
+
+// If you need the array for further processing, you can return or store it
+return rows;
+    });
+  });
+}
+
+// Call the function to process the file
+convertCsvToArray(filePath);
+`
+            },
+            {
+                title: "For Pdf",
+                code: `const fs = require("fs");
+const pdf = require("pdf-parse");
+
+// Path to the PDF file
+const pdfPath = "C:\\Users\\files to array\\sample.pdf"; // Replace with your actual file path
+
+// Function to extract text from a PDF
+async function extractTextFromPdf(pdfPath) {
+  try {
+    // Read the PDF file as a binary buffer
+    const dataBuffer = fs.readFileSync(pdfPath);
+
+    // Parse the PDF and extract text
+    const pdfData = await pdf(dataBuffer);
+
+    // Print the extracted text
+    console.log(pdfData.text);
+  } catch (error) {
+    console.error("Error extracting text from PDF:", error);
+  }
+}
+
+// Call the function
+extractTextFromPdf(pdfPath);
+
+`
+            },
+            {
+                title: "Installation",
+                code: `
+#Excel files 
+npm install xlsx
+#Docx files 
+npm install mammoth
+#Csv Files
+npm install csv-parse
+#Pdf files
+npm install pdf-parse
+`
+            }
+        ];
+
+        function highlightSyntax(code) {
+            return code
+                .replace(/(import|def|try|except|with|as|return|if|else|except|print)/g, '<span class="keyword">$1</span>')
+                .replace(/('#.*')/g, '<span class="comment">$1</span>')
+                .replace(/'([^']*)'/g, '<span class="string">\'$1\'</span>')
+                .replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+        }
+
+        function createCodeSections() {
+            const container = document.getElementById('code-container');
+
+            pythonCodeArray.forEach((item, index) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.classList.add('code-section');
+                
+                const button = document.createElement('button');
+                button.classList.add('copy-btn');
+                button.textContent = "Copy";
+                button.setAttribute('data-index', index);
+                button.onclick = () => copyCode(button, index);
+
+                const pre = document.createElement('pre');
+                pre.innerHTML = highlightSyntax(item.code);
+
+                const title = document.createElement('h3');
+                title.textContent = item.title;
+
+                sectionDiv.appendChild(title);
+                sectionDiv.appendChild(button);
+                sectionDiv.appendChild(pre);
+                
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        function copyCode(button, index) {
+            const codeText = pythonCodeArray[index].code;
+            navigator.clipboard.writeText(codeText).then(() => {
+                button.textContent = "Copied!";
+                setTimeout(() => {
+                    button.textContent = "Copy";
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        createCodeSections();
+    </script>
+</body>
+</html>
